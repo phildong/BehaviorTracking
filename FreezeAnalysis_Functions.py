@@ -246,11 +246,19 @@ def SaveData(file,fpath,Motion,Freezing,fps,mt_cutoff,FreezeThresh,MinDuration):
     
 ########################################################################################        
     
-def Summarize(file,Motion,Freezing,Bin_Names,Bin_Start,Bin_Stop,fps,mt_cutoff,FreezeThresh,MinDuration):
+def Summarize(file,Motion,Freezing,Bin_Names,Bin_Start,Bin_Stop,fps,mt_cutoff,FreezeThresh,MinDuration,Use_Bins):
+    
+    if Use_Bins == True:
+        if len(Motion)<max(Bin_Start):
+            print('Bin parameters exceed length of video.  Cannot create summary')
+    elif Use_Bins == False:
+        Bin_Names = ['avg'] 
+        Bin_Start = [0] 
+        Bin_Stop = [len(Motion)] 
     
     #Initialize arrays to store summary values in
     mt = np.zeros(len(Bin_Names)) 
-    fz = np.zeros(len(Bin_Names)) 
+    fz = np.zeros(len(Bin_Names))
     
     #Get averages for each bin
     for Bin in range (len(Bin_Names)):
@@ -304,18 +312,7 @@ def Batch(dpath,ftype,fps,ycrop,SIGMA,mt_cutoff,FreezeThresh,MinDuration,Use_Bin
         Motion = Measure_Motion(fpath,ycrop,mt_cutoff,SIGMA)
         Freezing = Measure_Freezing(Motion,FreezeThresh,MinDuration)
         SaveData(file,fpath,Motion,Freezing,fps,mt_cutoff,FreezeThresh,MinDuration)
-
-        #Create summary info for file, either based upon user-defined bins or taking average of entire video
-        if Use_Bins == True:
-            if len(Motion)<max(Bin_Start):
-                print('Bin parameters exceed length of video.  Cannot create summary')
-            elif len(Motion)>max(Bin_Start):
-                summary = Summarize(file,Motion,Freezing,Bin_Names,Bin_Start,Bin_Stop,fps,mt_cutoff,FreezeThresh,MinDuration)
-        elif Use_Bins == False:
-            Bin_Names = ['avg'] 
-            Bin_Start = [0] 
-            Bin_Stop = [len(Motion)] 
-            summary = Summarize(file,Motion,Freezing,Bin_Names,Bin_Start,Bin_Stop,fps,mt_cutoff,FreezeThresh,MinDuration)
+        summary = Summarize(file,Motion,Freezing,Bin_Names,Bin_Start,Bin_Stop,fps,mt_cutoff,FreezeThresh,MinDuration,Use_Bins)
 
         #Add summary info for individual file to larger summary of all files
         try:
