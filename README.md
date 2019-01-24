@@ -5,6 +5,7 @@ This repository contains iPython files that can be used to score an animal's mot
 * **FreezeAnalysis_Calibration.ipynb** is used to find baseline fluctuation of pixel grayscale across time with no animal present.
 * **FreezeAnalysis_Individual.ipynb** is used to analyze a single video. Provides extensive visualization abilities.
 * **FreezeAnalysis_BatchProcess.ipynb** is used to batch process a set of videos and create output file with summary statistics for each video using user-defined bins.
+* **FreezeAnalysis_Functions.py** contains functions used by ipynb files.  This file is required to be in the same folder as ipynb files but does not need to be edited by the user.
 
 ## Package requirements
 The iPython scripts included in this repository require the following packages to be installed in your Conda environment:
@@ -25,4 +26,4 @@ The following commands can be executed in your terminal to create the environmen
 As of yet, only mpg1 videos have been extensively tested, though wmv also seems to work.
 
 ## Running Code
-After downloading the ipynb files onto your local computer, from the terminal activate the necessary Conda environment and open Jupyter Notebook, then navigate to the files on your computer. The individual scripts contain more detailed instructions.
+After downloading the files onto your local computer in a single folder, from the terminal activate the necessary Conda environment and open Jupyter Notebook, then navigate to the files on your computer. The individual scripts contain more detailed instructions.
