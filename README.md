@@ -23,7 +23,7 @@ The following commands can be executed in your terminal to create the environmen
 * ```conda create -n EnvironmentName python=3.6.5 mahotas=1.4.4 pandas=0.23.0 matplotlib=2.2.2 opencv=3.4.3 jupyter imread```
 
 ## Video requirements
-As of yet, only mpg1 videos have been extensively tested, though wmv also seems to work.
+As of yet, mpg1, wmv, and avi (mp4 codec) all seem to work.  
 
 ## Running Code
 After downloading the files onto your local computer in a single folder, from the terminal activate the necessary Conda environment and open Jupyter Notebook, then navigate to the files on your computer. The individual scripts contain more detailed instructions.
