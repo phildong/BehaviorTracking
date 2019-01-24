@@ -18,8 +18,8 @@ The iPython scripts included in this repository require the following packages t
 * opencv(3.4.3)
 
 The following commands can be executed in your terminal to create the environment: 
-* conda config --add channels conda-forge
-* conda create -n EnvironmentName python=3.6.5 mahotas=1.4.4 pandas=0.23.0 matplotlib=2.2.2 opencv=3.4.3 jupyter imread
+* ```conda config --add channels conda-forge```
+* ```conda create -n EnvironmentName python=3.6.5 mahotas=1.4.4 pandas=0.23.0 matplotlib=2.2.2 opencv=3.4.3 jupyter imread```
 
 ## Video requirements
 As of yet, only mpg1 videos have been extensively tested, though wmv also seems to work.
