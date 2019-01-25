@@ -194,7 +194,7 @@ def PlayVideo(fpath,fps,start,end,img_scale,save_video,Freezing,mt_cutoff,ycrop,
             frame_cut = frame_cut.astype('uint8')*255
 
             #Add text to videos
-            if Freezing[x]==1:
+            if Freezing[x]==100:
                 texttext = 'FREEZING'
                 textfontcolor = 255
             else:
@@ -393,4 +393,38 @@ def Calibrate(fpath,cal_sec,cal_pix,fps,SIGMA):
     print ('99.99 percentile of pixel change differences: ' + str(ninetynine_point_ninenine))
     print ('Grayscale change cut-off for pixel change: ' + str(mt_cutoff))
 
+########################################################################################
+    
+def Reference(fpath,f):
 
+    #Upoad file
+    cap = cv2.VideoCapture(fpath)
+    
+    #Get frame dimensions
+    cap.set(1,0)#first index references frame property, second specifies next frame to grab
+    ret, frame = cap.read()
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    h,w=frame.shape
+
+    #Get maxiumum frame of file. Note that this is updated later if fewer frames detected
+    cap_max = int(cap.get(7)) #7 is index of total frames
+    
+    #Collect subset of frames
+    collection = np.zeros((f,h,w))
+    
+    for x in range (f):          
+        grabbed = False
+        while grabbed == False: 
+            f=np.random.randint(0,cap_max)
+            cap.set(1,f)#first index references frame property, second specifies next frame to grab
+            ret, frame = cap.read()
+            if ret == True:
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                collection[x,:,:]=gray
+                grabbed = True
+            elif ret == False:
+                pass
+    cap.release() 
+    
+    reference = np.mean(collection,axis=0)
+    return reference    
