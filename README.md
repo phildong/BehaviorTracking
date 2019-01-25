@@ -1,5 +1,10 @@
 # FreezeAnalysis
-This repository contains iPython files that can be used to score an animal's motion and freezing while in a conditioning chamber.  It was designed with side-view recording in mind, and with the intention of being able to crop the top of a video frame to remove the influence of fiberoptic/miniscope cables.
+This repository contains iPython files that can be used to score an animal's motion and freezing while in a conditioning chamber.  It was designed with side-view recording in mind, and with the intention of being able to crop the top of a video frame to remove the influence of fiberoptic/miniscope cables.  In the case where no cables are to be used, recording should be cabable from above the animal.
+
+## Basic Steps
+1. Run **FreezeAnalysis_Calibration.ipynb** on short video of chamber with no animal in it (~10 sec).  This allows detection of basal fluctuation in pixel grayscale values.  A suggested cutoff for use with subsequent steps is provided.
+2. Process several individual videos with **FreezeAnalysis_Individual.ipynb**.  This will allow extensive visualization of results in order to ensure confidence in selected parameters. 
+3. Once you are comfortable with paramaters, use **FreezeAnalysis_BatchProcess.ipynb** on a whole folder of videos!
 
 ## Included Files
 * **FreezeAnalysis_Calibration.ipynb** is used to find baseline fluctuation of pixel grayscale across time with no animal present.
