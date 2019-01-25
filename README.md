@@ -12,7 +12,7 @@ This repository contains iPython files that can be used to score an animal's mot
 * **FreezeAnalysis_BatchProcess.ipynb** is used to batch process a set of videos and create output file with summary statistics for each video using user-defined bins.
 * **FreezeAnalysis_Functions.py** contains functions used by ipynb files.  This file is required to be in the same folder as ipynb files but does not need to be edited by the user.
 
-## Installation and package requirements
+## Installation and Package Requirements
 The iPython scripts included in this repository require the following packages to be installed in your Conda environment:
 * python (3.6.5)
 * jupyter
