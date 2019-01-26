@@ -4,7 +4,7 @@ This repository contains iPython files that can be used to score an animal's mot
 ## Basic Workflow
 1. Run **FreezeAnalysis_Calibration.ipynb** on a short video of a chamber with no animal in it (~10 sec).  This allows detection of basal fluctuation in pixel grayscale values.  A suggested cutoff for use with subsequent steps is provided.
 2. Process several individual behavior videos with **FreezeAnalysis_Individual.ipynb**.  This will allow extensive visualization of results in order to ensure confidence in selected parameters. 
-3. Once you are comfortable with paramaters, use **FreezeAnalysis_BatchProcess.ipynb** on a whole folder of videos!
+3. Once you are comfortable with parameters, use **FreezeAnalysis_BatchProcess.ipynb** on a whole folder of videos!
 
 ## Included Files
 * **FreezeAnalysis_Calibration.ipynb** is used to find baseline fluctuation of pixel grayscale across time with no animal present.
