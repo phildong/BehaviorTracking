@@ -1,5 +1,5 @@
 # FreezeAnalysis
-This repository contains iPython files that can be used to score an animal's motion and freezing while in a conditioning chamber.  It was designed with side-view recording in mind, and with the intention of being able to crop the top of a video frame to remove the influence of fiberoptic/miniscope cables.  In the case where no cables are to be used, recording should be capable from above the animal.
+This repository contains iPython files that can be used to score an animal's motion and freezing while in a conditioning chamber.  It was designed with side-view recording in mind, and with the intention of being able to crop the top of a video frame to remove the influence of fiberoptic/miniscope cables.  In the case where no cables are to be used, recording should be capable from above the animal.  **If you are unfamiliar with how to use iPython/Jupyter Notebook, please see the [Getting Started repository](https://github.com/ZachPenn/GettingStarted)**
 
 ## Basic Workflow
 1. Run **FreezeAnalysis_Calibration.ipynb** on a short video of a chamber with no animal in it (~10 sec).  This allows detection of basal fluctuation in pixel grayscale values.  A suggested cutoff for use with subsequent steps is provided.
@@ -23,7 +23,7 @@ The iPython scripts included in this repository require the following packages t
 * matplotlib(2.2.2) 
 * opencv(3.4.3)
 
-Provided you have installed miniconda (see **Getting Started repository** for more details), the following commands can be executed in your terminal to create the environment: 
+Provided you have installed miniconda (see **[Getting Started repository](https://github.com/ZachPenn/GettingStarted)** for more details), the following commands can be executed in your terminal to create the environment: 
 1. ```conda config --add channels conda-forge```
 2. ```conda create -n EnvironmentName python=3.6.5 mahotas=1.4.4 pandas=0.23.0 matplotlib=2.2.2 opencv=3.4.3 jupyter imread```
 
