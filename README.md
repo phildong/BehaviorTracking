@@ -23,10 +23,11 @@ The iPython scripts included in this repository require the following packages t
 * matplotlib(2.2.2) 
 * opencv(3.4.3)
 * holoviews
+* scipy
 
 Provided you have installed miniconda (see **[Getting Started repository](https://github.com/ZachPenn/GettingStarted)** for more details), the following commands can be executed in your terminal to create the environment: 
 1. ```conda config --add channels conda-forge```
-2. ```conda create -n EnvironmentName python=3.6.5 mahotas=1.4.4 pandas=0.23.0 matplotlib=2.2.2 opencv=3.4.3 jupyter imread holoviews```
+2. ```conda create -n EnvironmentName python=3.6.5 mahotas=1.4.4 pandas=0.23.0 matplotlib=2.2.2 opencv=3.4.3 jupyter imread holoviews scipy```
 
 ## Video requirements
 As of yet, mpg1, wmv, and avi (mp4 codec) all seem to work.  
