@@ -22,6 +22,7 @@ The iPython scripts included in this repository require the following packages t
 * pandas(0.23.0)
 * matplotlib(2.2.2) 
 * opencv(3.4.3)
+* holoviews
 
 Provided you have installed miniconda (see **[Getting Started repository](https://github.com/ZachPenn/GettingStarted)** for more details), the following commands can be executed in your terminal to create the environment: 
 1. ```conda config --add channels conda-forge```
