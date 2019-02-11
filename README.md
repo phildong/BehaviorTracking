@@ -39,4 +39,4 @@ Provided you have installed miniconda (see **[Getting Started repository](https:
 As of yet, mpg1, wmv, and avi (mp4 codec) all seem to work.  
 
 ## Running Code
-After downloading the files onto your local computer in a single folder, from the terminal activate the necessary Conda environment ('''source activate EnvironmentName''') and open Jupyter Notebook ('''jupyter notebook'''), then navigate to the files on your computer. The individual scripts contain more detailed instructions.
+After downloading the files onto your local computer in a single folder, from the terminal activate the necessary Conda environment (```source activate EnvironmentName```) and open Jupyter Notebook (```jupyter notebook```), then navigate to the files on your computer. The individual scripts contain more detailed instructions.
