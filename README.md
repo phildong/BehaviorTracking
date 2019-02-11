@@ -13,6 +13,7 @@ The freezing module allows the user to score automatically score an animal's mot
 3. Once you are comfortable with parameters, use **FreezeAnalysis_BatchProcess.ipynb** on a whole folder of videos!
 
 ## Included Files
+* **LocationTracking.ipynb** is used to find the frame-by-frame location and distance travelled of an animal.  ROIs can be specified and analyzed as well.
 * **FreezeAnalysis_Calibration.ipynb** is used to find baseline fluctuation of pixel grayscale across time with no animal present.
 * **FreezeAnalysis_Individual.ipynb** is used to analyze a single video. Provides extensive visualization abilities.
 * **FreezeAnalysis_BatchProcess.ipynb** is used to batch process a set of videos and create output file with summary statistics for each video using user-defined bins.
