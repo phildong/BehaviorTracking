@@ -73,7 +73,7 @@ def LoadAndCrop(dpath,file,stretch_w=1,stretch_h=1,cropmethod='none'):
                height=int(gray.shape[0]*stretch_h),
               invert_yaxis=True,cmap='gray',
               colorbar=True,
-               toolbar='above',
+               toolbar='below',
               title="First Frame.  Crop if Desired")
     
     #Create polygon element on which to draw and connect via stream to poly drawing tool
@@ -154,7 +154,13 @@ def Load_First(dpath,file):
 
 ########################################################################################
 
-def Measure_Motion(fpath,ycrop,mt_cutoff,SIGMA):
+def Measure_Motion(fpath,crop,mt_cutoff,SIGMA):
+    
+    #Extract ycrop value
+    try:
+        ycrop=int(np.around(crop.data['y'][0]))
+    except:
+        ycrop=0
     
     #Upoad file
     cap = cv2.VideoCapture(fpath)
@@ -243,7 +249,13 @@ def Measure_Freezing(Motion,FreezeThresh,MinDuration):
 
 ########################################################################################
 
-def PlayVideo(fpath,fps,start,end,img_scale,save_video,Freezing,mt_cutoff,ycrop,SIGMA):
+def PlayVideo(fpath,fps,start,end,img_scale,save_video,Freezing,mt_cutoff,crop,SIGMA):
+    
+    #Extract ycrop value
+    try:
+        ycrop=int(np.around(crop.data['y'][0]))
+    except:
+        ycrop=0
     
     #Upoad file
     cap = cv2.VideoCapture(fpath)
