@@ -4,7 +4,6 @@
 
 # Check -
 # LoadAndCrop - 
-# Load_First -
 # Measure_Motion -
 # Measure_Freezing -
 # Play_Video -
@@ -112,55 +111,28 @@ def LoadAndCrop(dpath,file,stretch_w=1,stretch_h=1,cropmethod='none'):
             center=gray.shape[1]//2 
             try:
                 y=int(np.around(data['y'][0]))
-                htext=hv.Text(center,y+5,'ycrop: {x}'.format(x=y))
+                htext=hv.Text(center,y+10,'ycrop: {x}'.format(x=y))
                 return htext
             except:
-                htext=hv.Text(center,5, 'ycrop: 0')
+                htext=hv.Text(center,10, 'ycrop: 0')
                 return htext
         text=hv.DynamicMap(h_text,streams=[pointDraw_stream])
         
         return image*track*points*line*text,pointDraw_stream,fpath    
     
-########################################################################################    
-    
-def Load_First(dpath,file):
-    
-    #Upoad file
-    fpath = dpath + "/" + file
-    
-    if os.path.isfile(fpath):
-        print('file: '+ fpath)
-        cap = cv2.VideoCapture(fpath)
-    else:
-        raise FileNotFoundError('File not found. Check that directory and file names are correct.')
-
-    #Get maxiumum frame of file. Note that this is updated later if fewer frames detected
-    cap_max = int(cap.get(7)) #7 is index of total frames
-    print('total frames: ' + str(cap_max))
-
-    #Set first frame to be displayed
-    cap.set(1,0) #first index references frame property, second specifies next frame to grab
-
-    #Initialize ycrop in the event that it is not subsequently set to something other than 0
-    ycrop = 0
-
-    #Load first frame
-    ret, frame = cap.read()
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    
-    cap.release() 
-    
-    return(fpath,gray)
 
 ########################################################################################
 
 def Measure_Motion(fpath,crop,mt_cutoff,SIGMA):
     
-    #Extract ycrop value
-    try:
-        ycrop=int(np.around(crop.data['y'][0]))
-    except:
-        ycrop=0
+    #Extract ycrop value 
+    try: #if passed as x,y coordinates
+        if len(crop.data['y'])!=0:
+            ycrop = int(np.around(crop.data['y'][0]))
+        else:
+            ycrop=0
+    except: #if passed as single value
+        ycrop=crop
     
     #Upoad file
     cap = cv2.VideoCapture(fpath)
@@ -251,11 +223,14 @@ def Measure_Freezing(Motion,FreezeThresh,MinDuration):
 
 def PlayVideo(fpath,fps,start,end,img_scale,save_video,Freezing,mt_cutoff,crop,SIGMA):
     
-    #Extract ycrop value
-    try:
-        ycrop=int(np.around(crop.data['y'][0]))
-    except:
-        ycrop=0
+    #Extract ycrop value 
+    try: #if passed as x,y coordinates
+        if len(crop.data['y'])!=0:
+            ycrop = int(np.around(crop.data['y'][0]))
+        else:
+            ycrop=0
+    except: #if passed as single value
+        ycrop=crop
     
     #Upoad file
     cap = cv2.VideoCapture(fpath)
@@ -321,7 +296,7 @@ def PlayVideo(fpath,fps,start,end,img_scale,save_video,Freezing,mt_cutoff,crop,S
                 textfontcolor = 255
             else:
                 texttext = 'ACTIVE'
-                textfontcolor = 0
+                textfontcolor = 255
             cv2.putText(frame,texttext,textposition,textfont,textfontscale,textfontcolor,textlinetype)
 
             #Display video
@@ -370,10 +345,9 @@ def SaveData(file,fpath,Motion,Freezing,fps,mt_cutoff,FreezeThresh,MinDuration):
     
 def Summarize(file,Motion,Freezing,Bin_Names,Bin_Start,Bin_Stop,fps,mt_cutoff,FreezeThresh,MinDuration,Use_Bins):
     
-    Bin_Start = [x * fps for x in Bin_Start]
-    Bin_Stop = [x * fps for x in Bin_Stop]
-    
     if Use_Bins == True:
+        Bin_Start = [x * fps for x in Bin_Start]
+        Bin_Stop = [x * fps for x in Bin_Stop]
         if len(Motion)<max(Bin_Start):
             print('Bin parameters exceed length of video.  Cannot create summary')
     elif Use_Bins == False:
@@ -508,9 +482,9 @@ def Calibrate(fpath,cal_sec,cal_pix,fps,SIGMA):
     print ('99.99 percentile of pixel change differences: ' + str(percentile))
     print ('Grayscale change cut-off for pixel change: ' + str(mt_cutoff))
     
-    hist_freqs, hist_edges = np.histogram(cal_dif,bins=np.arange(50))
+    hist_freqs, hist_edges = np.histogram(cal_dif,bins=np.arange(30))
     hist = hv.Histogram((hist_edges, hist_freqs))
-    hist.opts(title="Motion Cutoff",xlabel="Grayscale Change")
+    hist.opts(title="Motion Cutoff: "+str(np.around(mt_cutoff,1)),xlabel="Grayscale Change")
     vline = hv.VLine(mt_cutoff)
     vline.opts(color='red')
     return hist*vline
@@ -563,7 +537,6 @@ def Reference(fpath,crop,f):
 def Locate(f,reference,SIGMA,loc_thresh,cap,crop,use_window=False,window=None,window_weight=0,prior=None):
     
     #attempt to load frame
-    cap.set(1,f) #first index references frame property, second specifies next frame to grab
     ret, frame = cap.read() #read frame
     
     #set window dimensions
@@ -588,8 +561,8 @@ def Locate(f,reference,SIGMA,loc_thresh,cap,crop,use_window=False,window=None,wi
         
         #find difference from reference and blur
         dif = np.absolute(frame-reference)
-        dif = mh.gaussian_filter(dif,sigma=SIGMA)
-        
+        dif = dif.astype('uint8')
+              
         #apply window
         if (use_window==True) and (window != None):
             dif_weights = np.ones(dif.shape)*window_weight
@@ -616,7 +589,9 @@ def TrackLocation(fpath,reference,SIGMA,loc_thresh,crop,use_window=False,window=
     
     #load video
     cap = cv2.VideoCapture(fpath)#set file
+    cap.set(1,0) #set starting frame
     cap_max = int(cap.get(7)) #get max frames. 7 is index of total frames
+   
     
     #Initialize vector to store motion values in
     X = np.zeros(cap_max)
@@ -624,7 +599,7 @@ def TrackLocation(fpath,reference,SIGMA,loc_thresh,crop,use_window=False,window=
     D = np.zeros(cap_max)
 
     #Loop through frames to detect frame by frame differences
-    for f in range (cap_max):
+    for f in range(cap_max):
         
         if f>0: 
             yprior = np.around(Y[f-1]).astype(int)
@@ -675,8 +650,8 @@ def LocationThresh_View(examples,figsize,fpath,reference,SIGMA,loc_thresh,crop):
         fxmin,fxmax=int(min(Xs)), int(max(Xs))
         fymin,fymax=int(min(Ys)), int(max(Ys))
     except:
-        fxmin,fxmax=0,frame.shape[1]
-        fymin,fymax=0,frame.shape[0]
+        fxmin,fxmax=0,reference.shape[1]
+        fymin,fymax=0,reference.shape[0]
     
     #examine random frames
     for x in range (1,examples+1):
@@ -779,9 +754,65 @@ def ROI_Location(reference,poly_stream,region_names,location):
     
     return location
     
+########################################################################################        
     
+def Summarize_Location(file,location,Use_Bins,Bin_Names,Bin_Start,Bin_Stop,
+                       fps,loc_thresh,use_window,window,window_weight,SIGMA,region_names=None):  
+   
+    #redefine bins in terms of frames 
+    if Use_Bins == True:
+        Bin_Start = [x * fps for x in Bin_Start]
+        Bin_Stop = [x * fps for x in Bin_Stop]
+        if len(location)<max(Bin_Start):
+            print('Bin parameters exceed length of video.  Cannot create summary')
+    elif Use_Bins == False:
+        Bin_Names = ['avg'] 
+        Bin_Start = [0] 
+        Bin_Stop = [len(location)] 
     
+    #initialize dataframe to store summary data in
+    try:
+        df = pd.DataFrame({var_name: np.zeros(len(Bin_Names)) for var_name in region_names})
+        df['Distance']=np.zeros(len(Bin_Names))   
+    except: #when no regions have been defined
+        df = pd.DataFrame({'Distance':np.zeros(len(Bin_Names))})
     
+    #calculate sum of motion and proportion of tme for each ROI
+    for Bin in range(len(Bin_Names)):
+        segment = slice(Bin_Start[Bin],Bin_Stop[Bin])
+        try:
+            df.loc[Bin] = location.loc[segment].apply(
+                dict([('Distance', np.sum)] + [(rname, np.mean) for rname in region_names]))  
+        except: #when no regions have been defined
+            df.loc[Bin] = location.loc[segment].apply(dict([('Distance', np.sum)]))  
+            
+    #Create data frame to store data in
+    df_summary = pd.DataFrame(
+    {'File': [file]*len(Bin_Names),
+     'FileLength': np.ones(len(Bin_Names))*len(location),
+     'FPS': np.ones(len(Bin_Names))*fps,
+     'Location_Thresh': np.ones(len(Bin_Names))*fps,
+     'Use_Window': np.ones(len(Bin_Names))*use_window,
+     'Window_Weight': np.ones(len(Bin_Names))*window_weight,
+     'Window_Size': np.ones(len(Bin_Names))*window,
+     'Bin': Bin_Names,
+     'Bin_Start(f)': Bin_Start,
+     'Bin_Stop(f)': Bin_Stop,
+    })    
+    df_summary = pd.concat([df_summary,df],axis=1)
+    return(df_summary) 
+    
+########################################################################################        
+#Code to export svg
+#conda install -c conda-forge selenium phantomjs
+
+#import os
+#from bokeh import models
+#from bokeh.io import export_svgs
+
+#bokeh_obj = hv.renderer('bokeh').get_plot(image).state
+#bokeh_obj.output_backend = 'svg'
+#export_svgs(bokeh_obj, dpath + '/' + 'Calibration_Frame.svg')
     
     
     
