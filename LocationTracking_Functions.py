@@ -118,14 +118,11 @@ def LoadAndCrop(video_dict,stretch,cropmethod='none'):
 
 ########################################################################################
     
-def Reference(video_dict,crop,num_frames=100,altfile=False):
+def Reference(video_dict,crop,num_frames=100):
     
-    #check
-    if altfile == True:
-        video_dict['altpath'] = video_dict['dpath'] + video_dict['altfile']
-        fpath = video_dict['altpath']
-    else:
-        fpath = video_dict['fpath']
+    #get correct ref video
+    vname = video_dict.get("altfile", video_dict['file'])
+    fpath = os.path.join(video_dict['dpath'], vname)
 
     #Upoad file
     cap = cv2.VideoCapture(fpath)
