@@ -43,7 +43,7 @@ def Check(UseBins,bin_dict):
 def LoadAndCrop(video_dict,stretch,cropmethod='none'):
     
     #Upoad file and check that it exists
-    video_dict['fpath'] = video_dict['dpath'] + video_dict['file']   
+    video_dict['fpath'] = os.path.join(os.path.normpath(video_dict['dpath']), video_dict['file'])
     if os.path.isfile(video_dict['fpath']):
         print('file: {file}'.format(file=video_dict['fpath']))
         cap = cv2.VideoCapture(video_dict['fpath'])
