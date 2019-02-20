@@ -122,10 +122,14 @@ def Reference(video_dict,crop,num_frames=100):
     
     #get correct ref video
     vname = video_dict.get("altfile", video_dict['file'])
-    fpath = os.path.join(video_dict['dpath'], vname)
+    fpath = os.path.join(os.path.normpath(video_dict['dpath']), vname)
+    if os.path.isfile(fpath):
+        print('file: {file}'.format(file=fpath))
+        cap = cv2.VideoCapture(fpath)
+    else:
+        raise FileNotFoundError('File not found. Check that directory and file names are correct.')
 
     #Upoad file
-    cap = cv2.VideoCapture(fpath)
     cap.set(1,0)#first index references frame property, second specifies next frame to grab
     
     #Get video dimensions with any cropping applied
