@@ -264,7 +264,7 @@ def TrackLocation(video_dict,tracking_params,reference,crop):
     
     #create pandas dataframe
     df = pd.DataFrame(
-    {'File' : video_dict['file']*len(D),
+    {'File' : video_dict['file'],
      'FPS': np.ones(len(D))*video_dict['fps'],
      'Location_Thresh': np.ones(len(D))*tracking_params['loc_thresh'],
      'Use_Window': str(tracking_params['use_window']),
