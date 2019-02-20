@@ -2,7 +2,6 @@
 #List of Functions in LocationTracking_Functions.py
 #
 
-# Check -
 # LoadAndCrop - 
 # Reference -
 # Locate -
@@ -32,13 +31,7 @@ warnings.filterwarnings("ignore")
 
 ########################################################################################
 
-def Check(UseBins,bin_dict):
-    
-    if UseBins==True:
-        if len(bin_dict['Bin_Names']) != len(bin_dict['Bin_Start']) or len(bin_dict['Bin_Names']) != len(bin_dict['Bin_Stop']):
-            print('WARNING.  Bin list sizes are not of equal length') 
-
-########################################################################################        
+      
 
 def LoadAndCrop(video_dict,stretch,cropmethod='none'):
     
@@ -406,53 +399,28 @@ def ROI_Location(reference,poly_stream,region_names,location):
     
 ########################################################################################        
     
-def Summarize_Location(video_dict,tracking_params,bin_dict,location,UseBins,region_names):  
-   
-    
-    #redefine bins in terms of frames 
-    Bin_Names,Bin_Start,Bin_Stop = bin_dict['Bin_Names'],bin_dict['Bin_Start'],bin_dict['Bin_Stop']
-    if UseBins == True:
-        Bin_Start = [x * video_dict['fps'] for x in Bin_Start]
-        Bin_Stop = [x * video_dict['fps'] for x in Bin_Stop]
-        if len(location)<max(Bin_Start):
-            print('Bin parameters exceed length of video.  Some bin info will not be generated')
-    elif UseBins == False:
-        Bin_Names = ['avg'] 
-        Bin_Start = [0] 
-        Bin_Stop = [len(location)] 
-    
-    #initialize dataframe to store summary data in
+def Summarize_Location(location, video_dict, bin_dict=None, region_names=None):
+    avg_dict = {'all': (location['Frame'].min(), location['Frame'].max())}
     try:
-        df = pd.DataFrame({var_name: np.zeros(len(Bin_Names)) for var_name in region_names})
-        df['Distance']=np.zeros(len(Bin_Names))   
-    except: #when no regions have been defined
-        df = pd.DataFrame({'Distance':np.zeros(len(Bin_Names))})
+        bin_dict = {k: tuple((np.array(v) * video_dict['fps']).tolist()) for k, v in bin_dict.items()}
+        bin_dict.update(avg_dict)
+    except AttributeError:
+        bin_dict = avg_dict
+    bins = (pd.Series(bin_dict).rename('range(f)')
+            .reset_index().rename(columns=dict(index='bin')))
+    bins['Distance'] = bins['range(f)'].apply(
+        lambda r: location[location['Frame'].between(*r)]['Distance'].sum())
+    if region_names is not None:
+        bins_reg = bins['range(f)'].apply(
+            lambda r: location[location['Frame'].between(*r)][region_names].mean())
+        bins = bins.join(bins_reg)
+    bins = pd.merge(
+        location.drop(['Distance', 'Frame', 'X', 'Y'] + region_names, axis='columns'),
+        bins,
+        left_index=True,
+        right_index=True)
+    return bins
     
-    #calculate sum of motion and proportion of tme for each ROI
-    for Bin in range(len(Bin_Names)):
-        segment = slice(Bin_Start[Bin],Bin_Stop[Bin])
-        try:
-            df.loc[Bin] = location.loc[segment].apply(
-                dict([('Distance', np.sum)] + [(rname, np.mean) for rname in region_names]))  
-        except: #when no regions have been defined
-            df.loc[Bin] = location.loc[segment].apply(dict([('Distance', np.sum)]))  
-            
-    #Create data frame to store data in
-    length = len(Bin_Names)
-    df_summary = pd.DataFrame(
-    {'File': video_dict['file']*length,
-     'FileLength': np.ones(length)*len(location),
-     #'FPS': np.ones(length)*video_dict['fps'],
-     'Location_Thresh': np.ones(length)*tracking_params['loc_thresh'],
-     'Use_Window': str(tracking_params['use_window']),
-     'Window_Weight': np.ones(length)*tracking_params['window_weight'],
-     'Window_Size': np.ones(length)*tracking_params['window_size'],
-     'Bin': Bin_Names,
-     'Bin_Start(f)': Bin_Start,
-     'Bin_Stop(f)': Bin_Stop,
-    })    
-    df_summary = pd.concat([df_summary,df],axis=1)
-    return(df_summary) 
     
 ########################################################################################        
 #Code to export svg
