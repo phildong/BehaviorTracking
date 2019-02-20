@@ -17,10 +17,10 @@ The freezing module allows the user to automatically score an animal's motion an
 * **FreezeAnalysis_Calibration.ipynb** is used to find baseline fluctuation of pixel grayscale across time with no animal present.
 * **FreezeAnalysis_Individual.ipynb** is used to analyze a single video. Provides extensive visualization abilities.
 * **FreezeAnalysis_BatchProcess.ipynb** is used to batch process a set of videos and create output file with summary statistics for each video using user-defined bins.
-* **BehaviorTracking_Functions.py** contains functions used by ipynb files.  This file is required to be in the same folder as ipynb files but does not need to be edited by the user.
+* **FreezeAnalysis_Functions.py** and **LocationTracking_Functions.py** contains functions used by ipynb files.  These files are required to be in the same folder as ipynb files but do not need to be edited by the user.
 
 ## Installation and Package Requirements
-The iPython scripts included in this repository require the following packages to be installed in your Conda environment:
+The iPython scripts included in this repository require the following packages to be installed in your Conda environment.  Although the package versions used are listed it is likely that latest releases of all will be fine to use:
 * python (3.6.5)
 * jupyter
 * imread
