@@ -128,12 +128,12 @@ def Reference(video_dict,crop,num_frames=100):
     #Get video dimensions with any cropping applied
     ret, frame = cap.read()
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    try:
+    try: #if frame is cropped
         Xs=[crop.data['x0'][0],crop.data['x1'][0]]
         Ys=[crop.data['y0'][0],crop.data['y1'][0]]
         fxmin,fxmax=int(min(Xs)), int(max(Xs))
         fymin,fymax=int(min(Ys)), int(max(Ys))
-    except:
+    except: #if no crop
         fxmin,fxmax=0,frame.shape[1]
         fymin,fymax=0,frame.shape[0]
     h,w=(fymax-fymin),(fxmax-fxmin)
@@ -177,12 +177,12 @@ def Locate(cap,crop,reference,tracking_params,prior=None):
         
         #load frame and crop
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        try:
+        try: #if crop is supplied
             Xs=[crop.data['x0'][0],crop.data['x1'][0]]
             Ys=[crop.data['y0'][0],crop.data['y1'][0]]
             fxmin,fxmax=int(min(Xs)), int(max(Xs))
             fymin,fymax=int(min(Ys)), int(max(Ys))
-        except:
+        except: #if no cropping is used
             fxmin,fxmax=0,frame.shape[1]
             fymin,fymax=0,frame.shape[0]
         frame = frame[fymin:fymax,fxmin:fxmax]
