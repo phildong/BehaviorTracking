@@ -414,8 +414,11 @@ def Summarize_Location(location, video_dict, bin_dict=None, region_names=None):
         bins_reg = bins['range(f)'].apply(
             lambda r: location[location['Frame'].between(*r)][region_names].mean())
         bins = bins.join(bins_reg)
+        drp_cols = ['Distance', 'Frame', 'X', 'Y'] + region_names
+    else:
+        drp_cols = ['Distance', 'Frame', 'X', 'Y']
     bins = pd.merge(
-        location.drop(['Distance', 'Frame', 'X', 'Y'] + region_names, axis='columns'),
+        location.drop(drp_cols, axis='columns'),
         bins,
         left_index=True,
         right_index=True)
